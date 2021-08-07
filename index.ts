@@ -18,7 +18,7 @@ app.get('/', (req, res) =>
  
 app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 {
-  Cron.cron('* * * * *');
+  Cron.cron('*/10 * * * * *');
   res.send('Initialised the cron task');
 });
 
