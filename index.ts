@@ -24,7 +24,7 @@ app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 
 app.post('/api/v1/notify', (req: express.Request, res: express.Response) => 
 {
-  res.send('Notify');
+  Notify.notify(req, res);
 });
 
 app.listen(config.port);
