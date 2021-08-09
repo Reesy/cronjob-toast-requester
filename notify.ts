@@ -1,13 +1,11 @@
 import nodeNotifier from "node-notifier";
 
-
-
 export class Notify 
 {
     public static notify(req: any, res: any) 
     {
 
-        nodeNotifier.notify(
+        return nodeNotifier.notify(
         {
             title: "Notification",
             message: "This is a notification"
@@ -24,9 +22,5 @@ export class Notify
             }
         });
 
-      res.send('Notification sent');
-
-      return;
-
-    }
-}
+    };
+};

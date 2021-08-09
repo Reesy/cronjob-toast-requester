@@ -9,13 +9,9 @@ import { Cron } from './cron';
 import { Notify } from './notify';
 import { config } from './config';
 
+
 const app = express()
- 
-app.get('/', (req, res) => 
-{
-  res.send('Hello World');
-});
- 
+
 app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 {
   Cron.cron('*/10 * * * * *');
@@ -25,6 +21,10 @@ app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 app.post('/api/v1/notify', (req: express.Request, res: express.Response) => 
 {
   Notify.notify(req, res);
+  res.send('Notification sent');
 });
 
-app.listen(config.port);
+app.listen(config.port, () =>
+{
+  console.log(`Server listening on port ${config.port}`);
+});

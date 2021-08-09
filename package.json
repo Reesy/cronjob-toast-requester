@@ -4,6 +4,7 @@
   "description": "A microservice which will queue up user specified notification based on cronjob expressions. ",
   "main": "index.js",
   "scripts": {
+    "bas": "npm run build && npm start",
     "build": "npx tsc",
     "start": "node ./dist/index",
     "test": "mocha dist/spec/cronApitest.js"
