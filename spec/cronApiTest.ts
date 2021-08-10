@@ -2,7 +2,7 @@ import { agent as request } from "supertest";
 import { expect } from 'chai';
 import { describe } from 'mocha';
 
-const baseURI = "http://localhost:3000";
+const baseURI = "localhost:8000";
 const cronURIv1 = "/api/v1/cron"; 
 const NotifyURIv1 = "/api/v1/notify";
 
@@ -11,7 +11,7 @@ describe(`When I call a bogus URI`, () =>
 { 
   let bogusURI = "/some/randomURI"
 
-  it("Should return a 404", async () => 
+  it("Should return a 404 (if this fails CHECK If server is running and config is correct", async () => 
   {
 
     const response = await request((baseURI)).get(bogusURI);
@@ -30,7 +30,7 @@ describe(`When I call ${cronURIv1}`, () =>
     it("Should return a 200", async () =>
     {
 
-      const response = await request((baseURI)).get(cronURIv1);
+      const response = await request((baseURI)).post(cronURIv1).set({"cron":"* * * * * *"});
       expect(response.status).to.eql(200);
    
     });
@@ -44,9 +44,9 @@ describe(`When I call ${cronURIv1}`, () =>
     {
 
       it(" should return a 400", async () =>
-      {
-
-        expect(true).to.eql(false);
+      { 
+        const response = await request((baseURI)).post(cronURIv1).set({"cron":"* * * * * Notaday"});
+        expect(response.status).to.eql(400);
       
       });
 
@@ -57,8 +57,8 @@ describe(`When I call ${cronURIv1}`, () =>
 
       it(" should return a 400", async () =>
       {
-
-        expect(true).to.eql(false);
+        const response = await request((baseURI)).post(cronURIv1).set({"cron":"86 * * * * *"});
+        expect(response.status).to.eql(400);
       
       });
 
@@ -69,8 +69,8 @@ describe(`When I call ${cronURIv1}`, () =>
       
       it(" should return a 400", async () =>
       {
-
-        expect(true).to.eql(false);
+        const response = await request((baseURI)).post(cronURIv1).set({});
+        expect(response.status).to.eql(400);
      
       });
 
@@ -82,8 +82,8 @@ describe(`When I call ${cronURIv1}`, () =>
       it(" should return a 400", async () =>
       {
 
-        expect(true).to.eql(false);
-     
+        const response = await request((baseURI)).post(cronURIv1).set({"cron":"* *"});
+        expect(response.status).to.eql(400);
       });
 
     });
@@ -93,8 +93,8 @@ describe(`When I call ${cronURIv1}`, () =>
 
       it(" should return a 400", async () =>
       {
-
-        expect(true).to.eql(false);
+        const response = await request((baseURI)).post(cronURIv1).set({"cron":"notAValidExpression"});
+        expect(response.status).to.eql(400);
       
       });
 
@@ -105,11 +105,11 @@ describe(`When I call ${cronURIv1}`, () =>
 
       it(" should return a 400", async () =>
       {
-
-        expect(true).to.eql(false);
+        const response = await request((baseURI)).post(cronURIv1).set({"zzzz":"* * * * * *"});
+        expect(response.status).to.eql(400);
 
       });
-      
+
     });
 
   });
@@ -124,9 +124,9 @@ describe(`When I call ${NotifyURIv1}`, () =>
     
     it("Should return a 200", async () => 
     {
-      const response = await request((baseURI)).get(cronURIv1);
-
+      const response = await request((baseURI)).post(NotifyURIv1).set({"Message":"This is a valid toast message!"});
       expect(response.status).to.eql(200);
+      
     });
   });
 
@@ -138,7 +138,19 @@ describe(`When I call ${NotifyURIv1}`, () =>
       
       it("Should return a 400", async () => 
       {
-        expect(true).to.eql(false);
+        const response = await request((baseURI)).post(NotifyURIv1);
+        expect(response.status).to.eql(400);
+      });
+    
+    });
+
+    describe(" with the notification message being empty", () =>
+    {
+      
+      it("Should return a 400", async () => 
+      {
+        const response = await request((baseURI)).post(NotifyURIv1).set({"Message":""});
+        expect(response.status).to.eql(400);
       });
     
     });
@@ -148,7 +160,8 @@ describe(`When I call ${NotifyURIv1}`, () =>
       
       it("Should return a 400", async () => 
       {
-        expect(true).to.eql(false);
+        const response = await request((baseURI)).post(NotifyURIv1).set({"Message":"This message should be way over 40 characters, hopefully it does not pass!!!"});
+        expect(response.status).to.eql(400);
       });
     
     });

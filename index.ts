@@ -9,8 +9,10 @@ import { Cron } from './cron';
 import { Notify } from './notify';
 import { config } from './config';
 
+const app = express();
 
-const app = express()
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 {
