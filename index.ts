@@ -3,7 +3,6 @@
 // The cron endpoint is used to schedule jobs to be executed at a specified time.
 // The notify endpoint is used to send a notification once.
 
-
 import express from 'express';
 import { Cron } from './cron';
 import { Notify } from './notify';
@@ -16,14 +15,34 @@ app.use(express.urlencoded({ extended: false }));
 
 app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 {
-  Cron.cron('*/10 * * * * *');
+  let body = req.body;
+  Cron.cron(body);
   res.send('Initialised the cron task');
 });
 
 app.post('/api/v1/notify', (req: express.Request, res: express.Response) => 
 {
-  Notify.notify(req, res);
-  res.send('Notification sent');
+  let body = req.body;
+  let title = body.title;
+  let message = body.message;
+  
+  try 
+  {
+    Notify.notify(title, message);
+  }
+  catch (error) 
+  {
+    
+    if (error.message == "Title is undefined" || error.message == "Message is undefined") 
+    {
+      res.statusCode = 400;
+      res.send("title and message are required");
+      return;
+    }
+
+  };
+
+  res.send('Notification sent!');
 });
 
 app.listen(config.port, () =>

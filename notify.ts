@@ -2,13 +2,27 @@ import nodeNotifier from "node-notifier";
 
 export class Notify 
 {
-    public static notify(req: any, res: any) 
+    public static notify(_title: string, _message: string) 
     {
+
+        if (typeof(_title) === "undefined")
+        {
+            
+            let error = new Error("Title is undefined");
+            throw error;
+        };
+
+        if (typeof(_message) === "undefined")
+        {
+            let error = new Error("Message is undefined");
+            throw error;
+        };
+        
 
         return nodeNotifier.notify(
         {
-            title: "Notification",
-            message: "This is a notification"
+            title: _title,
+            message: _message
         }, 
         (err, response) => 
         {
