@@ -124,9 +124,18 @@ describe(`When I call ${NotifyURIv1}`, () =>
     
     it("Should return a 200", async () => 
     {
-      const response = await request((baseURI)).post(NotifyURIv1).set({"Message":"This is a valid toast message!"});
-      expect(response.status).to.eql(200);
+      let requestBody = 
+      {
+        "title": "TestToast",
+        "message": "This is a test toast"
+      };
+      const response = await request((baseURI))
+            .post(NotifyURIv1)
+            .send(requestBody)
+            .set('Accept', 'application/json');
       
+      expect(response.status).to.eql(200);
+     
     });
   });
 
@@ -149,8 +158,18 @@ describe(`When I call ${NotifyURIv1}`, () =>
       
       it("Should return a 400", async () => 
       {
-        const response = await request((baseURI)).post(NotifyURIv1).set({"Message":""});
-        expect(response.status).to.eql(400);
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": ""
+        };
+        const response = await request((baseURI))
+          .post(NotifyURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+          
+          expect(response.status).to.eql(400);
+          expect(response.text).to.eql("title and message properties should not be empty");
       });
     
     });
@@ -160,12 +179,47 @@ describe(`When I call ${NotifyURIv1}`, () =>
       
       it("Should return a 400", async () => 
       {
-        const response = await request((baseURI)).post(NotifyURIv1).set({"Message":"This message should be way over 40 characters, hopefully it does not pass!!!"});
+
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": "This message should be way over 40 characters, hopefully it does not pass!!!"
+        };
+
+        const response = await request((baseURI))
+          .post(NotifyURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+
         expect(response.status).to.eql(400);
+        expect(response.text).to.eql("the notification message should be under 40 characters");
       });
     
     });
   
+    describe(" where the title exceeds 20 characters", () =>
+    {
+      
+      it("Should return a 400", async () => 
+      {
+
+        let requestBody = 
+        {
+          "title": "This should really be under 20 characters or it will look awful in the notifications window",
+          "message": "Toast message"
+        };
+
+        const response = await request((baseURI))
+          .post(NotifyURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+
+        expect(response.status).to.eql(400);
+        expect(response.text).to.eql("the notification title should be under 20 characters");
+
+      });
+    
+    });
   });
 
 });
