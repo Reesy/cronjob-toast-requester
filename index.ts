@@ -16,8 +16,20 @@ app.use(express.urlencoded({ extended: false }));
 app.post('/api/v1/cron', (req: express.Request, res: express.Response) =>
 {
   let body = req.body;
-  Cron.cron(body);
-  res.send('Initialised the cron task');
+  let title = body.title;
+  let message = body.message;
+  let cron = body.cron;
+
+  try 
+  {
+    Cron.cron(cron, title, message);
+    res.send('Notification sent!');
+  }
+  catch(error)
+  {
+    handleError(error, req, res);
+  };
+
 });
 
 app.post('/api/v1/notify', (req: express.Request, res: express.Response) => 
@@ -30,43 +42,55 @@ app.post('/api/v1/notify', (req: express.Request, res: express.Response) =>
   try 
   {
     Notify.notify(title, message);
+    res.send('Notification sent!');
   }
   catch (error) 
   {
-    
-    if (error.message === "Title is undefined" || error.message === "Message is undefined") 
-    {
-      res.statusCode = 400;
-      res.send("title and message are required");
-      return;
-    };
-
-    if (error.message === "Title is empty" || error.message === "Message is empty")
-    {
-      res.statusCode = 400;
-      res.send("title and message properties should not be empty");
-      return;
-    };
-
-    if (error.message === "Title is too long")
-    {
-      res.statusCode = 400;
-      res.send("the notification title should be under 20 characters");
-      return; 
-    };
-
-    if (error.message === "Message is too long")
-    {
-      res.statusCode = 400;
-      res.send("the notification message should be under 40 characters");
-      return; 
-    }
+    handleError(error, req, res);
   };
 
-  res.send('Notification sent!');
+ 
 });
 
 app.listen(config.port, () =>
 {
   console.log(`Server listening on port ${config.port}`);
 });
+
+
+let handleError = (error: any, req: express.Request, res: express.Response) =>
+{
+      
+  if (error.message === "Title is undefined" || error.message === "Message is undefined") 
+  {
+    res.statusCode = 400;
+    res.send("title and message are required");
+    return;
+  };
+
+  if (error.message === "Title is empty" || error.message === "Message is empty")
+  {
+    res.statusCode = 400;
+    res.send("title and message properties should not be empty");
+    return;
+  };
+
+  if (error.message === "Title is too long")
+  {
+    res.statusCode = 400;
+    res.send("the notification title should be under 20 characters");
+    return; 
+  };
+
+  if (error.message === "Message is too long")
+  {
+    res.statusCode = 400;
+    res.send("the notification message should be under 40 characters");
+    return; 
+  }
+
+
+  res.statusCode = 400;
+  res.send(error)
+  return;
+};

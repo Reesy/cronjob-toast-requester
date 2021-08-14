@@ -29,8 +29,17 @@ describe(`When I call ${cronURIv1}`, () =>
 
     it("Should return a 200", async () =>
     {
+      let requestBody = 
+      {
+        "title": "TestToast",
+        "message": "This is a test toast",
+        "cron": "*/30 * * * * *"
+      };
+      const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
 
-      const response = await request((baseURI)).post(cronURIv1).set({"cron":"* * * * * *"});
       expect(response.status).to.eql(200);
    
     });
@@ -45,72 +54,135 @@ describe(`When I call ${cronURIv1}`, () =>
 
       it(" should return a 400", async () =>
       { 
-        const response = await request((baseURI)).post(cronURIv1).set({"cron":"* * * * * Notaday"});
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": "This is a test toast",
+          "cron":"* * * * * Notaday"
+        };
+
+   
+        const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+        
         expect(response.status).to.eql(400);
       
       });
 
     });
     
-    describe(" with the wrong time", () =>
-    {
+    // describe(" with the wrong time", () =>
+    // {
 
-      it(" should return a 400", async () =>
-      {
-        const response = await request((baseURI)).post(cronURIv1).set({"cron":"86 * * * * *"});
-        expect(response.status).to.eql(400);
+    //   it(" should return a 400", async () =>
+    //   {
+
+    //     let requestBody = 
+    //     {
+    //       "title": "TestToast",
+    //       "message": "This is a test toast",
+    //       "cron":"86 * * * * *"
+    //     };
+
+    //     const response = await request((baseURI))
+    //       .post(cronURIv1)
+    //       .send(requestBody)
+    //       .set('Accept', 'application/json');
+    //     expect(response.status).to.eql(400);
       
-      });
+    //   });
 
-    });
+    // });
 
-    describe(" with the whole body missing", () =>
-    {
+    // describe(" with the whole body missing", () =>
+    // {
       
-      it(" should return a 400", async () =>
-      {
-        const response = await request((baseURI)).post(cronURIv1).set({});
-        expect(response.status).to.eql(400);
+    //   it(" should return a 400", async () =>
+    //   {
+
+    //     let requestBody = 
+    //     {
+    //     };
+
+    //     const response = await request((baseURI))
+    //       .post(cronURIv1)
+    //       .send(requestBody)
+    //       .set('Accept', 'application/json');
+    //     expect(response.status).to.eql(400);
      
-      });
+    //   });
 
-    });
+    // });
   
-    describe(" with part of the body missing", () =>
-    {
+    // describe(" with part of the body missing", () =>
+    // {
 
-      it(" should return a 400", async () =>
-      {
+    //   it(" should return a 400", async () =>
+    //   {
 
-        const response = await request((baseURI)).post(cronURIv1).set({"cron":"* *"});
-        expect(response.status).to.eql(400);
-      });
+    //     let requestBody = 
+    //     {
+    //       "title": "TestToast",
+    //       "message": "This is a test toast",
+    //       "cron":"* *"
+    //     };
 
-    });
+    //     const response = await request((baseURI))
+    //       .post(cronURIv1)
+    //       .send(requestBody)
+    //       .set('Accept', 'application/json');
+    //     expect(response.status).to.eql(400);
+    //   });
 
-    describe(" with unknown elements", () =>
-    {
+    // });
 
-      it(" should return a 400", async () =>
-      {
-        const response = await request((baseURI)).post(cronURIv1).set({"cron":"notAValidExpression"});
-        expect(response.status).to.eql(400);
+    // describe(" with unknown elements", () =>
+    // {
+
+
+    //   it(" should return a 400", async () =>
+    //   {
+
+    //     let requestBody = 
+    //     {
+    //       "title": "TestToast",
+    //       "message": "This is a test toast",
+    //       "cron":"notAValidExpression"
+    //     };
+
+    //     const response = await request((baseURI))
+    //       .post(cronURIv1)
+    //       .send(requestBody)
+    //       .set('Accept', 'application/json');
+    //     expect(response.status).to.eql(400);
       
-      });
+    //   });
 
-    });
+    // });
 
-    describe(" with the cron property missing from the request", () =>
-    {
+    // describe(" with the cron property missing from the request", () =>
+    // {
 
-      it(" should return a 400", async () =>
-      {
-        const response = await request((baseURI)).post(cronURIv1).set({"zzzz":"* * * * * *"});
-        expect(response.status).to.eql(400);
+    //   it(" should return a 400", async () =>
+    //   {
 
-      });
+    //     let requestBody = 
+    //     {
+    //       "title": "TestToast",
+    //       "message": "This is a test toast"
+    //     };
 
-    });
+    //     const response = await request((baseURI))
+    //       .post(cronURIv1)
+    //       .send(requestBody)
+    //       .set('Accept', 'application/json');
+    //     expect(response.status).to.eql(400);
+
+    //   });
+
+    // });
 
   });
 
