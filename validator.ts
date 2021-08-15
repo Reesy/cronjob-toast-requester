@@ -44,4 +44,27 @@ export class validator
 
     };
 
+    public static validateCronParams(_cron: string)
+    {
+        if (typeof(_cron) === "undefined")
+        {
+            let error = new Error("Cron is undefined");
+            throw error;
+        };
+
+        if (_cron === "")
+        {
+            let error = new Error("Cron is empty");
+            throw error;
+        };
+
+        if (_cron.length < 9)
+        {
+            let error = new Error("Cron expression is too short");
+            throw error;
+        };
+
+
+    };
+
 };

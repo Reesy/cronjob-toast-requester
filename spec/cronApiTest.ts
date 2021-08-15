@@ -67,122 +67,128 @@ describe(`When I call ${cronURIv1}`, () =>
           .send(requestBody)
           .set('Accept', 'application/json');
         
-        expect(response.status).to.eql(400);
+        expect(response.text).to.eql("The cron property was an invalid expression");
+        expect(response.status).to.eql(400); 
+ 
       
       });
 
     });
     
-    // describe(" with the wrong time", () =>
-    // {
+    describe(" with the wrong time", () =>
+    {
 
-    //   it(" should return a 400", async () =>
-    //   {
+      it(" should return a 400", async () =>
+      {
 
-    //     let requestBody = 
-    //     {
-    //       "title": "TestToast",
-    //       "message": "This is a test toast",
-    //       "cron":"86 * * * * *"
-    //     };
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": "This is a test toast",
+          "cron":"86 * * * * *"
+        };
 
-    //     const response = await request((baseURI))
-    //       .post(cronURIv1)
-    //       .send(requestBody)
-    //       .set('Accept', 'application/json');
-    //     expect(response.status).to.eql(400);
+        const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+        expect(response.text).to.eql("The cron property was an invalid expression");
+        expect(response.status).to.eql(400);
+        
+      });
+
+    });
+
+    describe(" with the whole body missing", () =>
+    {
       
-    //   });
+      it(" should return a 400", async () =>
+      {
 
-    // });
+        let requestBody = 
+        {
+        };
 
-    // describe(" with the whole body missing", () =>
-    // {
-      
-    //   it(" should return a 400", async () =>
-    //   {
+        const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+        expect(response.text).to.eql("title and message are required");
+        expect(response.status).to.eql(400);
+        
+      });
 
-    //     let requestBody = 
-    //     {
-    //     };
-
-    //     const response = await request((baseURI))
-    //       .post(cronURIv1)
-    //       .send(requestBody)
-    //       .set('Accept', 'application/json');
-    //     expect(response.status).to.eql(400);
-     
-    //   });
-
-    // });
+    });
   
-    // describe(" with part of the body missing", () =>
-    // {
+    describe(" with part of the body missing", () =>
+    {
 
-    //   it(" should return a 400", async () =>
-    //   {
+      it(" should return a 400", async () =>
+      {
 
-    //     let requestBody = 
-    //     {
-    //       "title": "TestToast",
-    //       "message": "This is a test toast",
-    //       "cron":"* *"
-    //     };
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": "This is a test toast",
+          "cron":"* *"
+        };
 
-    //     const response = await request((baseURI))
-    //       .post(cronURIv1)
-    //       .send(requestBody)
-    //       .set('Accept', 'application/json');
-    //     expect(response.status).to.eql(400);
-    //   });
+        const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+        expect(response.status).to.eql(400);
+        expect(response.text).to.eql("The cron expression is too short");
+      });
 
-    // });
+    });
 
-    // describe(" with unknown elements", () =>
-    // {
+    describe(" with unknown elements", () =>
+    {
+      //Keeping this in as it will indicate to me if the problem is patched and a more relevent test can be written. 
+      it(" should return a 400 but it returns 500 because of bug in node-cron", async () =>
+      {
 
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": "This is a test toast",
+          "cron":"notAValidExpression"
+        };
 
-    //   it(" should return a 400", async () =>
-    //   {
+        const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+        expect(response.text).to.eql("There was an unexpected error in a used library, please ensure properties in the request are correct. If you still have a problem contact an admin");
+        expect(response.status).to.eql(500);
+        
+      });
 
-    //     let requestBody = 
-    //     {
-    //       "title": "TestToast",
-    //       "message": "This is a test toast",
-    //       "cron":"notAValidExpression"
-    //     };
+    });
 
-    //     const response = await request((baseURI))
-    //       .post(cronURIv1)
-    //       .send(requestBody)
-    //       .set('Accept', 'application/json');
-    //     expect(response.status).to.eql(400);
-      
-    //   });
+    describe(" with the cron property missing from the request", () =>
+    {
 
-    // });
+      it(" should return a 400", async () =>
+      {
 
-    // describe(" with the cron property missing from the request", () =>
-    // {
+        let requestBody = 
+        {
+          "title": "TestToast",
+          "message": "This is a test toast"
+        };
 
-    //   it(" should return a 400", async () =>
-    //   {
+        const response = await request((baseURI))
+          .post(cronURIv1)
+          .send(requestBody)
+          .set('Accept', 'application/json');
+        expect(response.text).to.eql("The cron expression was undefined");
+        expect(response.status).to.eql(400);
 
-    //     let requestBody = 
-    //     {
-    //       "title": "TestToast",
-    //       "message": "This is a test toast"
-    //     };
+      });
 
-    //     const response = await request((baseURI))
-    //       .post(cronURIv1)
-    //       .send(requestBody)
-    //       .set('Accept', 'application/json');
-    //     expect(response.status).to.eql(400);
-
-    //   });
-
-    // });
+    });
 
   });
 

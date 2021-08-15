@@ -5,11 +5,12 @@ import { validator } from './validator';
 
 export class Cron 
 {
-    public static cron(cronExpression: string, _title: string, _message: string) 
+    public static cron(_cronExpression: string, _title: string, _message: string) 
     {
 
         validator.validateNotifyParams(_title, _message);
-        return nodeCron.schedule(cronExpression, () => 
+        validator.validateCronParams(_cronExpression);
+        return nodeCron.schedule(_cronExpression, () => 
         {
             Notify.notify(_title, _message);
         });  

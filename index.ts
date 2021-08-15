@@ -87,10 +87,51 @@ let handleError = (error: any, req: express.Request, res: express.Response) =>
     res.statusCode = 400;
     res.send("the notification message should be under 40 characters");
     return; 
+  };
+
+  if (error.message === "Cron expression is too short" )
+  {
+    res.statusCode = 400;
+    res.send("The cron expression is too short");
+    return; 
+  };
+
+  if (error.message === "Cron is undefined")
+  {
+    res.statusCode = 400;
+    res.send("The cron expression was undefined");
+    return; 
   }
 
+  if (error.message === "Cron is empty")
+  {
+    res.statusCode = 400;
+    res.send("The cron expression was empty");
+    return;
+  };
 
-  res.statusCode = 400;
-  res.send(error)
+  let message : string = typeof(error.message) === 'undefined'  ? error : error.message;
+
+  if (message.includes("invalid expression"))
+  {
+    res.statusCode = 400;
+    res.send("The cron property was an invalid expression");
+    return;
+  }
+
+  if (typeof(error.stack) !== 'undefined')
+  {
+    if (error.stack.includes("node-cron"))
+    {
+      res.statusCode = 500;
+      res.send("There was an unexpected error in a used library, please ensure properties in the request are correct. If you still have a problem contact an admin");
+      return;
+    }
+
+  };
+
+
+  res.statusCode = 500;
+  res.send(message);
   return;
 };
