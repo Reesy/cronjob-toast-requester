@@ -1,5 +1,5 @@
 {
-  "name": "cronjob-api-requester",
+  "name": "cronjob-toast-requester",
   "version": "0.1.0",
   "description": "A microservice which will queue up user specified notification based on cronjob expressions. ",
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Reesy/cronjob-api-requester.git"
+    "url": "git+https://github.com/Reesy/cronjob-toast-requester.git"
   },
   "author": "Reesy",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Reesy/cronjob-api-requester/issues"
+    "url": "https://github.com/Reesy/cronjob-toast-requester/issues"
   },
-  "homepage": "https://github.com/Reesy/cronjob-api-requester#readme",
+  "homepage": "https://github.com/Reesy/cronjob-toast-requester#readme",
   "dependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^16.4.10",
